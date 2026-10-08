@@ -47,22 +47,24 @@ jobs:
           echo "CONFIG_PACKAGE_luci-app-autoreboot=y" >> .config
           echo "CONFIG_PACKAGE_luci-app-wol=y" >> .config
           echo "CONFIG_PACKAGE_iperf3=y" >> .config
-          # 【禁用bug包】
+          # 【禁用emortal全套bug包】
           echo "# CONFIG_PACKAGE_autosamba is not set" >> .config
           echo "# CONFIG_PACKAGE_autocore is not set" >> .config
           echo "# CONFIG_PACKAGE_autosmb is not set" >> .config
           echo "# CONFIG_PACKAGE_default-settings is not set" >> .config
+          echo "# CONFIG_PACKAGE_emortal-automount is not set" >> .config
           # 【禁用Docker】
           echo "# CONFIG_PACKAGE_docker is not set" >> .config
           echo "# CONFIG_PACKAGE_luci-app-docker is not set" >> .config
 
       - name: Compile firmware
-        run: make -j$(nproc)
+        run: make -j1 V=s
 
       - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
           name: BE68U-Firmware
           path: bin/targets/**
+
 
 
