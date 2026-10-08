@@ -6,14 +6,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    container: ghcr.io/immortalwrt/build-env:latest
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Setup build environment
-        uses: ghcr.io/immortalwrt/build-env:latest
 
       - name: Add iStore feed
         run: |
