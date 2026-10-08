@@ -21,8 +21,8 @@ jobs:
       - name: Add iStore feed
         run: |
           echo 'src-git istore https://github.com/linkease/istore;main' >> feeds.conf.default
-          ./scripts/feeds update -a
-          ./scripts/feeds install -a
+          ./scripts/feeds update istore
+          ./scripts/feeds install istore
 
       - name: Config BE68U
         run: |
@@ -67,6 +67,7 @@ jobs:
         with:
           name: BE68U-Firmware
           path: bin/targets/**
+
 
 
 
