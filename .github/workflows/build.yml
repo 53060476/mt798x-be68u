@@ -56,3 +56,4 @@ jobs:
         with:
           name: BE68U-Firmware
           path: bin/targets/**
+            
