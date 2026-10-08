@@ -7,7 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    # 删除原来的 container: ghcr.io/immortalwrt/build-env:latest
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -53,6 +52,13 @@ jobs:
           echo "CONFIG_PACKAGE_curl=y" >> .config
           echo "CONFIG_PACKAGE_wget=y" >> .config
           echo "CONFIG_PACKAGE_nano=y" >> .config
+          # ========== 新增插件开始 ==========
+          echo "CONFIG_PACKAGE_luci-app-socat=y" >> .config
+          echo "CONFIG_PACKAGE_luci-app-ddns=y" >> .config
+          echo "CONFIG_PACKAGE_luci-app-upnp=y" >> .config
+          echo "CONFIG_PACKAGE_luci-app-turboacc=y" >> .config
+          echo "CONFIG_PACKAGE_luci-app-netdata=y" >> .config
+          # ========== 新增插件结束 ==========
 
       - name: Compile firmware
         run: make -j$(nproc)
@@ -62,5 +68,6 @@ jobs:
         with:
           name: BE68U-Firmware
           path: bin/targets/**
+
 
 
