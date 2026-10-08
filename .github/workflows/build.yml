@@ -1,0 +1,63 @@
+name: Build BE68U-Like-iStoreOS
+on:
+  push:
+    branches: [ "*" ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup build environment
+        uses: ghcr.io/immortalwrt/build-env:latest
+
+      - name: Add iStore feed
+        run: |
+          echo 'src-git istore https://github.com/linkease/istore;main' >> feeds.conf.default
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: Config Ruijie BE68U 仿iStoreOS全套（Quickstart+iStoreX）
+        run: |
+          make defconfig
+          # 目标设备 锐捷BE68U mt7981
+          echo "CONFIG_TARGET_mediatek_mt798x_DEVICE_ruijie_be68u=y" >> .config
+          # 基础LuCI
+          echo "CONFIG_PACKAGE_luci=y" >> .config
+          echo "CONFIG_PACKAGE_luci-app-opkg=y" >> .config
+          echo "CONFIG_PACKAGE_luci-compat=y" >> .config
+          # Quickstart 开机初始化向导（中文）
+          echo "CONFIG_PACKAGE_luci-app-quickstart=y" >> .config
+          echo "CONFIG_PACKAGE_luci-i18n-quickstart-zh-cn=y" >> .config
+          # iStoreX 仿iStoreOS卡片大屏首页
+          echo "CONFIG_PACKAGE_luci-app-istorex=y" >> .config
+          # iStore应用商店 + 中文包
+          echo "CONFIG_PACKAGE_luci-app-store=y" >> .config
+          echo "CONFIG_PACKAGE_luci-i18n-store-zh-cn=y" >> .config
+          # 系统基础工具
+          echo "CONFIG_PACKAGE_iperf3=y" >> .config
+          echo "CONFIG_PACKAGE_curl=y" >> .config
+          echo "CONFIG_PACKAGE_wget=y" >> .config
+          echo "CONFIG_PACKAGE_nano=y" >> .config
+          # AdGuardHome 广告过滤
+          echo "CONFIG_PACKAGE_luci-app-adguardhome=y" >> .config
+          echo "CONFIG_PACKAGE_adguardhome=y" >> .config
+          # Passwall 代理+中文语言包
+          echo "CONFIG_PACKAGE_luci-app-passwall=y" >> .config
+          echo "CONFIG_PACKAGE_luci-i18n-passwall-zh-cn=y" >> .config
+          # 附加常用
+          echo "CONFIG_PACKAGE_luci-app-rebootschedule=y" >> .config #定时重启
+          echo "CONFIG_PACKAGE_luci-app-wol=y" >> .config #网络唤醒
+
+      - name: Compile firmware
+        run: make -j$(nproc)
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: BE68U-Like-iStoreOS-Firmware
+          path: bin/targets/**
