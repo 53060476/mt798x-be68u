@@ -24,14 +24,6 @@ jobs:
           sudo apt update
           sudo apt install -y build-essential libncurses-dev gawk flex bison openssl libssl-dev device-tree-compiler libz-dev libelf-dev python3 python3-pip unzip curl
 
-      - name: Add feeds
-        run: |
-          sed -i '/istore/d' feeds.conf.default
-          echo 'src-git istore https://github.com/linkease/istore;main' >> feeds.conf.default
-          cat feeds.conf.default
-          ./scripts/feeds update istore
-          ./scripts/feeds install istore
-
       - name: Config BE68U
         run: |
           make defconfig
@@ -40,14 +32,7 @@ jobs:
           # 基础LuCI & 中文
           echo "CONFIG_PACKAGE_luci=y" >> .config
           echo "CONFIG_PACKAGE_luci-i18n-zh-cn=y" >> .config
-          # 【保留插件，无Passwall】
-          echo "CONFIG_PACKAGE_luci-app-quickstart=y" >> .config
-          echo "CONFIG_PACKAGE_luci-app-store=y" >> .config
-          echo "CONFIG_PACKAGE_luci-i18n-store-zh-cn=y" >> .config
-          echo "CONFIG_PACKAGE_luci-app-autoreboot=y" >> .config
-          echo "CONFIG_PACKAGE_luci-app-wol=y" >> .config
-          echo "CONFIG_PACKAGE_iperf3=y" >> .config
-          # 【禁用emortal全套bug包】
+          # 【禁用bug包】
           echo "# CONFIG_PACKAGE_autosamba is not set" >> .config
           echo "# CONFIG_PACKAGE_autocore is not set" >> .config
           echo "# CONFIG_PACKAGE_autosmb is not set" >> .config
@@ -58,13 +43,12 @@ jobs:
           echo "# CONFIG_PACKAGE_luci-app-docker is not set" >> .config
 
       - name: Compile firmware
-        run: make -j1 V=s
+        run: make -j$(nproc)
 
       - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
           name: BE68U-Firmware
           path: bin/targets/**
-
 
 
