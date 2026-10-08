@@ -1,3 +1,5 @@
+
+
 name: Ruijie BE68U Build
 on:
   workflow_dispatch:
@@ -27,8 +29,8 @@ jobs:
       - name: Add feeds
         run: |
           echo 'src-git istore https://github.com/linkease/istore;main' >> feeds.conf.default
-          ./scripts/feeds update -a
-          ./scripts/feeds install -a
+          ./scripts/feeds update istore
+          ./scripts/feeds install istore
 
       - name: Config BE68U
         run: |
@@ -38,7 +40,7 @@ jobs:
           # 基础LuCI & 中文
           echo "CONFIG_PACKAGE_luci=y" >> .config
           echo "CONFIG_PACKAGE_luci-i18n-zh-cn=y" >> .config
-          # 【保留插件，已移除AdGuardHome】
+          # 【保留插件】
           echo "CONFIG_PACKAGE_luci-app-quickstart=y" >> .config
           echo "CONFIG_PACKAGE_luci-app-store=y" >> .config
           echo "CONFIG_PACKAGE_luci-i18n-store-zh-cn=y" >> .config
@@ -63,6 +65,4 @@ jobs:
         with:
           name: BE68U-Firmware
           path: bin/targets/**
-
-
 
