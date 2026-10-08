@@ -2,7 +2,7 @@ name: Ruijie BE68U Build
 on:
   workflow_dispatch:
   push:
-    branches: ["merge-wifi7"]
+    branches: ["mt798x-mt799x-mtwifi_be72pro_be68u"]
 
 jobs:
   build:
@@ -57,4 +57,5 @@ jobs:
         with:
           name: BE68U-Firmware
           path: bin/targets/**
+
 
