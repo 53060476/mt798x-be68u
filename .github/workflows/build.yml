@@ -58,7 +58,8 @@ jobs:
           echo "# CONFIG_PACKAGE_luci-app-docker is not set" >> .config
 
       - name: Compile firmware
-        run: make -j$(nproc)
+        run: make -j1 V=s
+
 
       - name: Upload firmware
         uses: actions/upload-artifact@v4
